@@ -62,7 +62,7 @@ class Officine {
 
   rentrer(str: string): void {
     const match = str.match(/^(\d+)\s+(.+)$/);
-    if (!this.hasAMatch(match!)) return;
+    if (!this.hasAMatch(match)) return;
 
     const qty = Number.parseInt(match![1]!, 10);
     const item = match![2]!;
@@ -77,7 +77,7 @@ class Officine {
 
   preparer(str: string): number {
     const match = str.match(/^(\d+)\s+(.+)$/);
-    if (!this.hasAMatch(match!)) return 0;
+    if (!this.hasAMatch(match)) return 0;
     const requested = Number.parseInt(match![1]!, 10);
     const item = match![2]!;
     const sing = this.singularize(item);
@@ -86,8 +86,8 @@ class Officine {
     let maxPossible = Infinity;
     const requirements = [];
     for (const reqStr of recipe) {
-      const match = reqStr.match(/^(\d+)\s+(.+)$/);
-      if (!this.hasAMatch(match!)) continue;
+      const match = /^(\d+)\s+(.+)$/.exec(reqStr);
+      if (!this.hasAMatch(match)) continue;
       const reqQty = Number.parseInt(match![1]!, 10);
       const reqItem = match![2]!;
       const reqSing = this.singularize(reqItem);
@@ -109,7 +109,7 @@ class Officine {
   }
 
   private hasAMatch(match: RegExpMatchArray | null): boolean {
-    return !!(match && match[1] && match[2]);
+    return !!(match?.[1] && match?.[2]);
   }
 }
 
