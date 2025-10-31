@@ -86,7 +86,7 @@ class Officine {
     let maxPossible = Infinity;
     const requirements = [];
     for (const reqStr of recipe) {
-      const match = /^(\d+)\s+(.+)$/.exec(reqStr);
+      const match = /^([0-9]{1,9})\s+([\s\S]+)$/.exec(reqStr);
       if (!this.hasAMatch(match)) continue;
       const reqQty = Number.parseInt(match![1]!, 10);
       const reqItem = match![2]!;
