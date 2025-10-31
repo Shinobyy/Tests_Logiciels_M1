@@ -56,7 +56,7 @@ class Officine {
   rentrer(str) {
     const match = str.match(/^(\d+)\s+(.+)$/);
     if (!match) return;
-    const qty = parseInt(match[1], 10);
+    const qty = Number.parseInt(match[1], 10);
     const item = match[2];
     const sing = this.singularize(item);
     this.stocks.set(sing, (this.stocks.get(sing) || 0) + qty);
@@ -70,7 +70,7 @@ class Officine {
   preparer(str) {
     const match = str.match(/^(\d+)\s+(.+)$/);
     if (!match) return 0;
-    const requested = parseInt(match[1], 10);
+    const requested = Number.parseInt(match[1], 10);
     const item = match[2];
     const sing = this.singularize(item);
     const recipe = this.recettes[sing];
@@ -80,7 +80,7 @@ class Officine {
     for (const reqStr of recipe) {
       const m = reqStr.match(/^(\d+)\s+(.+)$/);
       if (!m) continue;
-      const reqQty = parseInt(m[1], 10);
+      const reqQty = Number.parseInt(m[1], 10);
       const reqItem = m[2];
       const reqSing = this.singularize(reqItem);
       const available = this.stocks.get(reqSing) || 0;
