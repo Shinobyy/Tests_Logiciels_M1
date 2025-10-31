@@ -61,7 +61,7 @@ class Officine {
   }
 
   rentrer(str: string): void {
-    const match = str.match(/^(\d+)\s+(.+)$/);
+    const match = /^(\d+)\s+(.+)$/.exec(str);
     if (!this.hasAMatch(match)) return;
 
     const qty = Number.parseInt(match![1]!, 10);
@@ -76,7 +76,7 @@ class Officine {
   }
 
   preparer(str: string): number {
-    const match = str.match(/^(\d+)\s+(.+)$/);
+    const match = /^(\d+)\s+(.+)$/.exec(str);
     if (!this.hasAMatch(match)) return 0;
     const requested = Number.parseInt(match![1]!, 10);
     const item = match![2]!;
