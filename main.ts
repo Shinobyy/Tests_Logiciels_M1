@@ -1,4 +1,11 @@
+import type { Recettes } from "./types/types";
+
 class Officine {
+  public ingredients: string[] = [];
+  public recettes: Recettes = {};
+  public singularMap: Record<string, string> = {};
+  public stocks: Map<string, number> = new Map();
+
   constructor() {
     this.ingredients = [
       "œil/yeux de grenouille",
@@ -49,39 +56,40 @@ class Officine {
     this.stocks = new Map();
   }
 
-  singularize(item) {
+  singularize(item: string): string {
     return this.singularMap[item] || item;
   }
 
-  rentrer(str) {
+  rentrer(str: string): void {
     const match = str.match(/^(\d+)\s+(.+)$/);
-    if (!match) return;
-    const qty = Number.parseInt(match[1], 10);
-    const item = match[2];
+    if (!this.hasAMatch(match!)) return;
+
+    const qty = Number.parseInt(match![1]!, 10);
+    const item = match![2]!;
     const sing = this.singularize(item);
     this.stocks.set(sing, (this.stocks.get(sing) || 0) + qty);
   }
 
-  quantite(item) {
+  quantite(item: string): number {
     const sing = this.singularize(item);
     return this.stocks.get(sing) || 0;
   }
 
-  preparer(str) {
+  preparer(str: string): number {
     const match = str.match(/^(\d+)\s+(.+)$/);
-    if (!match) return 0;
-    const requested = Number.parseInt(match[1], 10);
-    const item = match[2];
+    if (!this.hasAMatch(match!)) return 0;
+    const requested = Number.parseInt(match![1]!, 10);
+    const item = match![2]!;
     const sing = this.singularize(item);
     const recipe = this.recettes[sing];
     if (!recipe) return 0;
     let maxPossible = Infinity;
     const requirements = [];
     for (const reqStr of recipe) {
-      const m = reqStr.match(/^(\d+)\s+(.+)$/);
-      if (!m) continue;
-      const reqQty = Number.parseInt(m[1], 10);
-      const reqItem = m[2];
+      const match = reqStr.match(/^(\d+)\s+(.+)$/);
+      if (!this.hasAMatch(match!)) continue;
+      const reqQty = Number.parseInt(match![1]!, 10);
+      const reqItem = match![2]!;
       const reqSing = this.singularize(reqItem);
       const available = this.stocks.get(reqSing) || 0;
       const canMake = Math.floor(available / reqQty);
@@ -91,12 +99,18 @@ class Officine {
     const actual = Math.min(requested, maxPossible);
     if (actual > 0) {
       for (const { reqSing, reqQty } of requirements) {
-        this.stocks.set(reqSing, this.stocks.get(reqSing) - actual * reqQty);
+        if (!reqSing) continue;
+        const current = this.stocks.get(reqSing) ?? 0;
+        this.stocks.set(reqSing, current - actual * reqQty);
       }
       this.stocks.set(sing, (this.stocks.get(sing) || 0) + actual);
     }
     return actual;
   }
+
+  private hasAMatch(match: RegExpMatchArray | null): boolean {
+    return !!(match && match[1] && match[2]);
+  }
 }
 
-module.exports = Officine;
+export = Officine;

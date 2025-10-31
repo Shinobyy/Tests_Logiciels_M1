@@ -1,4 +1,4 @@
-const Officine = require("../main");
+import Officine = require("../main");
 
 test("rentrer_cas_usuel_ingredient_connu_pluriel", () => {
   const officine = new Officine();
